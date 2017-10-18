@@ -1,8 +1,9 @@
 #include<stdio.h>
 #include "structure.h"
 #include<stdlib.h>
-void login()
+void login(tree *t)
 {
+  
   //clrscr();
   system("clear");
   char str[100];
@@ -14,8 +15,6 @@ void login()
   printf("\n\n\n\n\n*******************************************************************************************************************\n");
   printf("*******************************************************************************************************************\n");
   int ch,ele,n1;
-  tree t;
-  create(&t);
   while(1)
   {
     printf("Enter choice\n");
@@ -34,19 +33,22 @@ void login()
        scanf("%f",&price);
        printf("Enter element Tax percentage\n");
        scanf("%f",&tax);
-       printf("Enetr element expiry date\n");
+       printf("Enetr element expiry date(dd/mm/yyyy)\n");
        scanf("%s",date);
-       ins(&t,barcode,str,category,price,tax,date);
+       //int data=0;
+       //tree **k;
+       //k=&t;
+       ins(t,barcode,str,category,price,tax,date);
        break;
        case 2:
-        printf("Enter elements barcode whichhas to be deleted\n");
+        printf("Enter elements barcode which has to be deleted\n");
         scanf("%d",&barcode);
-        del(&t,barcode);
+        del(t,barcode);
        break;
-       case 3:if(emp(&t))
+       case 3:if(emp(t))
             printf("No elements\n");
            else
-            trav(&t);
+            trav(t);
        break;
        case 4:return;
        break;
@@ -197,4 +199,97 @@ iot(r->right);
 int emp(tree *t)
 {
 return(t->root==NULL);
+}
+int search(tree *t,int data)
+{
+node *p,*q,*temp;
+p=t->root;
+q=NULL;
+if(p==NULL)
+ return 0;
+else
+{
+while(p!=NULL && p->barcode!=data)
+{
+q=p;
+if(data<p->barcode)
+ p=p->left;
+else
+ p=p->right;
+}
+if(p==NULL)
+{
+ return 0;
+}
+else
+ return 1;
+}
+}
+void create_link(START *s)
+{
+s->head=NULL;
+s->c=0;
+}
+void ins_link(START *s,node *temp1)
+{
+ARLIST *temp,*temp2;
+temp=(ARLIST *)malloc(sizeof(ARLIST));
+temp->barcode=temp1->barcode;
+temp->category=temp1->category;
+temp->price=temp1->price;
+temp->tax=temp1->tax;
+strcpy(temp->expdate,temp1->expdate);
+strcpy(temp->str,temp1->str);
+temp->next=NULL;
+temp2=s->head;
+if(s->head==NULL)
+{
+ s->head=temp;
+ s->c=s->c+1;
+}
+else
+{
+ while(temp2->next!=NULL)
+ temp2=temp2->next;
+ temp2->next=temp;
+ s->c=s->c+1;
+}
+}
+void add(tree *t,START *s,int data)
+{
+node *p,*q,*temp;
+p=t->root;
+q=NULL;
+while(p!=NULL && p->barcode!=data)
+{
+q=p;
+if(data<p->barcode)
+ p=p->left;
+else
+ p=p->right;
+}
+ins_link(s,p);
+}
+void bill(START *s)
+{
+int barcode;         
+int category;
+float price;
+float tax;
+char expdate[11];
+char str[100];
+float p;
+ARLIST *temp;
+temp=s->head;
+printf("Bar_Code     Name     Expiry_Date     Category     MRP     TaxPrice\n");
+float sum=0;
+while(temp!=NULL)
+{
+p=((temp->tax/100.0)*temp->price)+temp->price;
+sum=sum+p;
+printf("%d    %s     %s     %d     %f     %f     %f\n",temp->barcode,temp->str,temp->expdate,temp->category,temp->price,temp->tax,p);
+temp=temp->next;
+}
+printf("Total Bill=%f\n",sum);
+printf("Thank You Visit Again\n");
 }

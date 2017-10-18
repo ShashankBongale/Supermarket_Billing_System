@@ -3,9 +3,13 @@
 #include "structure.h"
 int main()
 {
+  tree t;
+  create(&t);
   int n,c=0;
   char str1[100];
   char str2[100];
+  int bc;
+  float sum,k;
   //clrscr();
   system("clear");
   printf("\n\n\n\n\n\n*******************************************************************************************************************\n");
@@ -31,7 +35,7 @@ do{
              if(strcmp(str2,"123")==0)
              {
                printf("You have logged in\n");
-               login();
+               login(&t);
                break;
              }
              else
@@ -46,9 +50,30 @@ do{
            }while(c<2); 
           }
           break;
-   case 2:
-        printf("Thank you\n");
-        exit(0);
+   case 2:printf("Welcome to the billing system\n");
+          //tree t;
+          bc=1;
+          START s;
+          //char z[10]="dssa";
+          //tree *t,int barcode,char name[],int category,float price,float tax,char date[],int data,tree **k
+          //ins(&t,4455,z,1,55,45,1111,1,&k);
+          int barcode;
+	  create_link(&s);
+          while(bc==1)
+          {
+	  printf("Enter Bar code of the Item to be billed\n");
+          scanf("%d",&barcode);
+          if(search(&t,barcode))
+  	  {
+           add(&t,&s,barcode);
+          }
+          else
+           printf("Element is not present\n");
+          printf("If you want to continue billing press 1 or press any other integer to print the bill\n");
+          scanf("%d",&bc);  
+          }
+          bill(&s);
+          break;
    case 3:printf("Exit\n");
           exit(0);
    default:
