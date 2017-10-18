@@ -1,86 +1,6 @@
 #include<stdio.h>
+#include "structure.h"
 #include<stdlib.h>
-#include<math.h>
-#include<string.h>
-#include<stdio.h>
-#include<stdlib.h>
-typedef struct node
-{
-   struct node *left,*right;
-   int barcode;         
-   int category;
-   float price;
-   float tax;
-   char expdate[11];
-   char str[100];
-}node;
-typedef struct tree
-{
-node *root;
-}tree;
-void trav(tree *);
-void iot(node *);
-void ins(tree *,int ,char [],int ,float ,float ,char []);
-void del(tree *,int );
-void create(tree *);
-void login();
-int emp(tree *);
-int main()
-{
-  int n,c=0;
-  char str1[100];
-  char str2[100];
-  //clrscr();
-  system("clear");
-  printf("\n\n\n\n\n\n*******************************************************************************************************************\n");
-  printf("*******************************************************************************************************************\n");
-  printf("\t\t\t\t\tWELCOME TO BHATS AND BROS SUPERMARKET\n");
-  printf("*******************************************************************************************************************\n");
-  printf("*******************************************************************************************************************\n");
-do{
-  printf("\n");
-  printf("Enter your choice!!..\n");
-  printf("1.Admin\n2.Customer\n3.Exit\n");
-  scanf("%d",&n);
-  switch(n)
-  {
-    case 1:
-          printf("Enter your Username\n");
-          scanf("%s",str1);
-          if(strcmp(str1,"User") ==0)
-          {
-            do{
-             printf("Enter your password\n");
-             scanf("%s",str2);
-             if(strcmp(str2,"123")==0)
-             {
-               printf("You have logged in\n");
-               login();
-               break;
-             }
-             else
-             {
-               c++;
-               if(c==2)
-               { 
-                 printf("Unauthorized access\n");
-                 exit(0);
-               } 
-             }
-           }while(c<2); 
-          }
-          break;
-   case 2:
-        printf("Thank you\n");
-        exit(0);
-   case 3:printf("Exit\n");
-          exit(0);
-   default:
-        printf("Invalid Option Enter once again\n");
-  }
-  }while(n<=2);
-  return 0;
-}
 void login()
 {
   //clrscr();
@@ -193,8 +113,12 @@ if(p==NULL)
 }
 else
 {
-
- if(q==NULL)
+ if(p->left==NULL && p->right==NULL)
+ {
+  t->root=NULL;
+  free(p);                 //If only root is present
+ }
+ else if(q==NULL)
  {
   temp=p->right;           //If Root elemented has to be deleted
   while(temp->left!=NULL)
