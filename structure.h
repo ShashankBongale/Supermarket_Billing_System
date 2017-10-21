@@ -49,3 +49,5 @@ void create_link(START *);
 void ins_link(START *,node *);
 void add(tree *,START *,int );
 void bill(START *);
+void category_function(tree *,int );
+void iot1(node *,int);

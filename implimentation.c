@@ -7,8 +7,9 @@ void login(tree *t)
   //clrscr();
   system("clear");
   char str[100];
+  int *cat[5];
   int barcode;
-  int category;
+  int category,category1;
   float price;
   char date[9];
   float tax;
@@ -18,7 +19,7 @@ void login(tree *t)
   while(1)
   {
     printf("Enter choice\n");
-    printf("\n1.Add an item\n2.Remove an item\n3.Display the store inventory\n4.Exit\n");
+    printf("\n1.Add an item\n2.Remove an item\n3.Display the store inventory\n4.Access Element Category Wise\n5.Exit\n");
     scanf("%d",&ch);
     switch(ch)
     {
@@ -50,7 +51,11 @@ void login(tree *t)
            else
             trav(t);
        break;
-       case 4:return;
+       case 4:printf("Enter category which you want to access\n");
+              scanf("%d",&category1);
+              category_function(t,category1);
+              break;
+       case 5:return;
        break;
        default:printf("Invalid option\n");
   }
@@ -293,3 +298,22 @@ temp=temp->next;
 printf("Total Bill=%f\n",sum);
 printf("Thank You Visit Again\n");
 }
+void category_function(tree *t,int category1)
+{
+printf("Bar_Code     Name     Expiry_Date     Category     MRP     TaxPrice\n");
+node *temp=t->root;
+iot1(temp,category1);
+}
+void iot1(node *r,int category1)
+{
+if(r!=NULL)
+{
+iot1(r->left,category1);
+if(r->category==category1)
+{
+printf("%d    %s     %s     %d     %f     %f\n",r->barcode,r->str,r->expdate,r->category,r->price,r->tax);
+}
+iot1(r->right,category1);
+}
+}
+
