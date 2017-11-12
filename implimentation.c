@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include "structure.h"
 #include<stdlib.h>
+#include<string.h>
 void login(tree *t)
 {
   
@@ -12,12 +13,28 @@ void login(tree *t)
   int category,category1;
   float price;
   char date[9];
+  char string[1000];
   float tax;
+  int barcode1;
+  FILE *fp;
+  fp = fopen("file.txt", "a+");
+  //fp=fopen("file.txt","r");
+  while(!feof(fp))
+  {
+    fscanf(fp,"%s %d %d %f %f %s\n",str,&barcode1,&category,&price,&tax,date);
+    //printf("%s %d %d %f %f %s\n",str,barcode1,category,price,tax,date);
+    ins(t,barcode1,str,category,price,tax,date);
+  }
+  fclose(fp);
+  fp=fopen("file.txt","a+");
+  system("clear");
   printf("\n\n\n\n\n*******************************************************************************************************************\n");
   printf("*******************************************************************************************************************\n");
   int ch,ele,n1;
   while(1)
-  {
+  { 
+    printf("\n\n\n\n\n*******************************************************************************************************************\n");
+
     printf("Enter choice\n");
     printf("\n1.Add an item\n2.Remove an item\n3.Display the store inventory\n4.Access Element Category Wise\n5.Exit\n");
     scanf("%d",&ch);
@@ -36,10 +53,9 @@ void login(tree *t)
        scanf("%f",&tax);
        printf("Enetr element expiry date(dd/mm/yyyy)\n");
        scanf("%s",date);
-       //int data=0;
-       //tree **k;
-       //k=&t;
+       fprintf(fp,"%s %d %d %f %f %s\n",str,barcode,category,price,tax,date);
        ins(t,barcode,str,category,price,tax,date);
+       system("clear");
        break;
        case 2:
         printf("Enter elements barcode which has to be deleted\n");
@@ -49,7 +65,11 @@ void login(tree *t)
        case 3:if(emp(t))
             printf("No elements\n");
            else
+            {
+             system("clear");
+             printf("\n\n\n\n\n*******************************************************************************************************************\n");
             trav(t);
+            }
        break;
        case 4:printf("Enter category which you want to access\n");
               scanf("%d",&category1);
@@ -183,6 +203,7 @@ else
 }
 void trav(tree *t)
 {
+printf("Bar_Code     Name     Expiry_Date           Category          MRP         TaxPrice\n");
 iot(t->root);
 printf("\n");
 }
@@ -191,6 +212,7 @@ void iot(node *r)
 if(r!=NULL)
 {
 iot(r->left);
+/*
 printf("Barcode :%d\n",r->barcode);
 printf("Name    :%s\n",r->str);
 printf("Category:%d\n",r->category);
@@ -198,6 +220,8 @@ printf("Price   :%f\n",r->price);
 printf("Tax Per :%f\n",r->tax);
 printf("Exp Date:%s\n",r->expdate);
 printf("\n");
+*/
+printf("%d        %s         %s            %d         %f          %f\n",r->barcode,r->str,r->expdate,r->category,r->price,r->tax);
 iot(r->right);
 }
 }
@@ -275,7 +299,7 @@ else
 }
 ins_link(s,p);
 }
-void bill(START *s)
+void bill(START *s,tree *t)
 {
 int barcode;         
 int category;
@@ -284,15 +308,18 @@ float tax;
 char expdate[11];
 char str[100];
 float p;
+
 ARLIST *temp;
 temp=s->head;
-printf("Bar_Code     Name     Expiry_Date     Category     MRP     TaxPrice\n");
+system("clear");
+printf("\n\n\n\n\n*******************************************************************************************************************\n");
+printf("Bar_Code        Name          Expiry_Date         Category         MRP           TaxPrice      SubTotal\n");
 float sum=0;
 while(temp!=NULL)
 {
 p=((temp->tax/100.0)*temp->price)+temp->price;
 sum=sum+p;
-printf("%d    %s     %s     %d     %f     %f     %f\n",temp->barcode,temp->str,temp->expdate,temp->category,temp->price,temp->tax,p);
+printf("%d          %s           %s           %d           %f        %f      %f\n",temp->barcode,temp->str,temp->expdate,temp->category,temp->price,temp->tax,p);
 temp=temp->next;
 }
 printf("Total Bill=%f\n",sum);

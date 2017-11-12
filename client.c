@@ -51,6 +51,22 @@ do{
           }
           break;
    case 2:printf("Welcome to the billing system\n");
+         FILE *fp;
+         char str[100];
+         int *cat[5];
+         int barcode1;
+         int category,category1;
+         float price;
+         char date[9];
+         char string[1000];
+         float tax;
+        fp=fopen("file.txt","r");
+	while(!feof(fp))
+	{
+	fscanf(fp,"%s %d %d %f %f %s\n",str,&barcode1,&category,&price,&tax,date);
+	//printf("%s %d %d %f %f %s\n",str,barcode1,category,price,tax,date);
+	ins(&t,barcode1,str,category,price,tax,date);
+	}
           //tree t;
           bc=1;
           START s;
@@ -72,7 +88,7 @@ do{
           printf("If you want to continue billing press 1 or press any other integer to print the bill\n");
           scanf("%d",&bc);  
           }
-          bill(&s);
+          bill(&s,&t);
           break;
    case 3:printf("Exit\n");
           exit(0);

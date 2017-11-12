@@ -48,6 +48,6 @@ float billing(tree *t,int );
 void create_link(START *);
 void ins_link(START *,node *);
 void add(tree *,START *,int );
-void bill(START *);
+void bill(START *,tree *);
 void category_function(tree *,int );
 void iot1(node *,int);
