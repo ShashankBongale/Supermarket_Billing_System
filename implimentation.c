@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include "structure.h"
 #include<stdlib.h>
+#include <time.h>
 #include<string.h>
 void login(tree *t)
 {
@@ -36,7 +37,7 @@ void login(tree *t)
     printf("\n\n\n\n\n*******************************************************************************************************************\n");
 
     printf("Enter choice\n");
-    printf("\n1.Add an item\n2.Remove an item\n3.Display the store inventory\n4.Access Element Category Wise\n5.Exit\n");
+    printf("\n1.Add an item\n2.Remove an item\n3.Display the store inventory\n4.Access Element Category Wise\n5.Expired Items\n6.Exit\n");
     scanf("%d",&ch);
     switch(ch)
     {
@@ -55,6 +56,8 @@ void login(tree *t)
        scanf("%s",date);
        fprintf(fp,"%s %d %d %f %f %s\n",str,barcode,category,price,tax,date);
        ins(t,barcode,str,category,price,tax,date);
+       fclose(fp);
+       fp=fopen("file.txt","a+");
        system("clear");
        break;
        case 2:
@@ -75,8 +78,9 @@ void login(tree *t)
               scanf("%d",&category1);
               category_function(t,category1);
               break;
-       case 5:return;
+       case 5:expir_items();
        break;
+       case 6:return;
        default:printf("Invalid option\n");
   }
 }
@@ -117,90 +121,73 @@ else
  q->right=temp;
 }
 }
+node * minValueNode(node* node1)
+{
+node* current = node1;
+while (current->left != NULL)
+ current = current->left;
+return current;
+}
 void del(tree *t,int data)
 {
-node *p,*q,*temp;
-p=t->root;
-q=NULL;
-if(p==NULL)
- printf("tree does not contain any elements\n");
+t->root=deleteNode(t->root,data);
+char str[100];
+int *cat[5];
+int barcode;
+int category,category1;
+float price;
+char date[9];
+char string[1000];
+float tax;
+int barcode1;
+FILE *fp,*fp_new;
+fp = fopen("file.txt", "a+");
+fp_new=fopen("file2.txt","w+");
+while(!feof(fp))
+{
+ fscanf(fp,"%s %d %d %f %f %s\n",str,&barcode1,&category,&price,&tax,date);
+if(barcode1!=data)
+ fprintf(fp_new,"%s %d %d %f %f %s\n",str,barcode1,category,price,tax,date);
+    //ins(t,barcode1,str,category,price,tax,date);
+}
+remove("file.txt");
+int ret;
+char oldname[] = "file2.txt";
+char newname[] = "file.txt";
+fclose(fp_new);
+fp_new=fopen("file.txt","w+");
+fclose(fp_new);
+ret = rename(oldname, newname);
+}
+node* deleteNode(node* root, int key)
+{
+if(root == NULL) 
+ return root;
+if(key < root->barcode)
+ root->left = deleteNode(root->left, key);
+else if(key > root->barcode)
+ root->right = deleteNode(root->right, key);
 else
 {
-while(p!=NULL && p->barcode!=data)
-{
-q=p;
-if(data<p->barcode)
- p=p->left;
-else
- p=p->right;
-}
-if(p==NULL)
-{
- printf("Element not present\n");
-}
-else
-{
- if(p->left==NULL && p->right==NULL)
- {
-  t->root=NULL;
-  free(p);                 //If only root is present
- }
- else if(q==NULL)
- {
-  temp=p->right;           //If Root elemented has to be deleted
-  while(temp->left!=NULL)
- {
-  temp=temp->left;
- }
-  temp->left=p->left;
-  t->root=p->right;
-  free(p);
- }
- else if(p->left==NULL && p->right==NULL)
- { 
-  if(p->barcode>q->barcode)
+ if(root->left == NULL)
   {
-   free(p);
-   q->right=NULL;         
-  }
-  else
+    node *temp = root->right;
+    free(root);
+    return temp;
+   }
+ else if (root->right == NULL)
   {
-  free(p);
-  q->left=NULL;
+    node *temp = root->left;
+    free(root);
+    return temp;
   }
- }
- else if(p->left==NULL && p->right!=NULL)
- { 
-  if(p->barcode>q->barcode)
-  {
-   q->right=p->right;
-  }
-  else  
-  q->left=p->right;
-  free(p);
- }
- else if(p->right==NULL && p->left!=NULL)
- { 
-  if(p->barcode>q->barcode)
-   q->right=p->left;
-  else
-   q->left=p->left;
-  free(p);
- }
- else
- {
-  temp=p->right;
-  while(temp->left!=NULL)
-  {
-    temp=temp->left;
-  }
-  q->right=p->right;
-  temp->left=p->left;
-  free(p);
- }
+ node* temp = minValueNode(root->right);
+ root->barcode = temp->barcode;
+ root->right = deleteNode(root->right, temp->barcode);
 }
+return root;
 }
-}
+
 void trav(tree *t)
 {
 printf("Bar_Code     Name     Expiry_Date           Category          MRP         TaxPrice\n");
@@ -319,11 +306,22 @@ while(temp!=NULL)
 {
 p=((temp->tax/100.0)*temp->price)+temp->price;
 sum=sum+p;
+
 printf("%d          %s           %s           %d           %f        %f      %f\n",temp->barcode,temp->str,temp->expdate,temp->category,temp->price,temp->tax,p);
 temp=temp->next;
 }
+printf("\n");
+float z=sum;
+if(sum>2500)
+{
+ printf("You have an offer of 10 percent\n");
+ sum=0.9*sum;
+}
+ 
 printf("Total Bill=%f\n",sum);
-printf("Thank You Visit Again\n");
+printf("You have Saved :%f",z-sum); 
+printf("\n");
+printf("********************************************************Thank You Visit Again***************************************\n");
 }
 void category_function(tree *t,int category1)
 {
@@ -343,4 +341,41 @@ printf("%d    %s     %s     %d     %f     %f\n",r->barcode,r->str,r->expdate,r->
 iot1(r->right,category1);
 }
 }
-
+void expir_items()
+{
+time_t t = time(NULL);
+struct tm tm = *localtime(&t);
+float d = 	(tm.tm_year + 1900) + ((float)(tm.tm_mon)/12) + ((float)(tm.tm_mday)/365);
+printf("Current Date and Time:\n %d-%d-%d %d:%d:%d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+printf("\n");
+FILE *fp;
+char str[100];
+int *cat[5];
+int barcode1;
+int category,category1;
+float price;
+char date[9];
+char string[1000];
+float tax;
+const char s[2] = "/";
+char *token;
+float year,month,day;
+float temp;
+fp=fopen("file.txt","r");
+printf("**********************************The Expired Items are:**********************************************************\n");
+while(!feof(fp))
+{
+	fscanf(fp,"%s %d %d %f %f %s\n",str,&barcode1,&category,&price,&tax,date);
+	token = strtok(date, s);
+	day = atof(token);
+	token = strtok(NULL, s);
+	month = atof(token);
+	token = strtok(NULL, s);
+	year = atof(token);
+	temp = year + ((month-1)/12) + (day/365);
+	if(temp < d)
+	{
+		printf("%s  barcode:%d \n",str,barcode1);
+	}
+}
+}

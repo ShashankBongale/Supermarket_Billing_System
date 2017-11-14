@@ -51,3 +51,6 @@ void add(tree *,START *,int );
 void bill(START *,tree *);
 void category_function(tree *,int );
 void iot1(node *,int);
+node* deleteNode(node* , int );
+node* minValueNode(node* );
+void expir_items();
