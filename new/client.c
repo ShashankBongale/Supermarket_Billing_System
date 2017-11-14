@@ -1,13 +1,10 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include<string.h>
 #include "structure.h"
 int main()
 {
   tree t;
-  create(&t); 
-  int i;
-  char pc,password[10];
+  create(&t);
   int n,c=0;
   char str1[100];
   char str2[100];
@@ -33,20 +30,9 @@ do{
           if(strcmp(str1,"User") ==0)
           {
             do{
-            
              printf("Enter your password\n");
-           
-             scanf("%s",password);
-             
-           /*
-            while( (pc=getch())!= '\n');
-            {
-             password[i] = pc;
-             printf("*");
-             i++;
-            }
-*/
-             if(strcmp(password,"123")==0)
+             scanf("%s",str2);
+             if(strcmp(str2,"123")==0)
              {
                printf("You have logged in\n");
                login(&t);
@@ -93,7 +79,6 @@ do{
           {
 	  printf("Enter Bar code of the Item to be billed\n");
           scanf("%d",&barcode);
-          
           if(search(&t,barcode))
   	  {
            add(&t,&s,barcode);

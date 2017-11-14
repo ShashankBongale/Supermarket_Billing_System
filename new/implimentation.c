@@ -1,7 +1,7 @@
 #include<stdio.h>
-#include <time.h>
 #include "structure.h"
 #include<stdlib.h>
+#include <time.h>
 #include<string.h>
 void login(tree *t)
 {
@@ -57,6 +57,7 @@ void login(tree *t)
        fprintf(fp,"%s %d %d %f %f %s\n",str,barcode,category,price,tax,date);
        ins(t,barcode,str,category,price,tax,date);
        fclose(fp);
+       fp=fopen("file.txt","a+");
        system("clear");
        break;
        case 2:
@@ -64,15 +65,7 @@ void login(tree *t)
         scanf("%d",&barcode);
         del(t,barcode);
        break;
-       case 3:
-              while(!feof(fp))
-            {
-              fscanf(fp,"%s %d %d %f %f %s\n",str,&barcode1,&category,&price,&tax,date);
-              //printf("%s %d %d %f %f %s\n",str,barcode1,category,price,tax,date);
-             ins(t,barcode1,str,category,price,tax,date);
-            } 
-            printf("%p\n",t->root);
-            if(emp(t))
+       case 3:if(emp(t))
             printf("No elements\n");
            else
             {
@@ -86,9 +79,8 @@ void login(tree *t)
               category_function(t,category1);
               break;
        case 5:expir_items();
-              break;
-       case 6:return;
        break;
+       case 6:return;
        default:printf("Invalid option\n");
   }
 }
@@ -207,6 +199,15 @@ void iot(node *r)
 if(r!=NULL)
 {
 iot(r->left);
+/*
+printf("Barcode :%d\n",r->barcode);
+printf("Name    :%s\n",r->str);
+printf("Category:%d\n",r->category);
+printf("Price   :%f\n",r->price);
+printf("Tax Per :%f\n",r->tax);
+printf("Exp Date:%s\n",r->expdate);
+printf("\n");
+*/
 printf("%d        %s         %s            %d         %f          %f\n",r->barcode,r->str,r->expdate,r->category,r->price,r->tax);
 iot(r->right);
 }
@@ -305,13 +306,22 @@ while(temp!=NULL)
 {
 p=((temp->tax/100.0)*temp->price)+temp->price;
 sum=sum+p;
+
 printf("%d          %s           %s           %d           %f        %f      %f\n",temp->barcode,temp->str,temp->expdate,temp->category,temp->price,temp->tax,p);
 temp=temp->next;
 }
 printf("\n");
+float z=sum;
+if(sum>2500)
+{
+ printf("You have an offer of 10 percent\n");
+ sum=0.9*sum;
+}
+ 
 printf("Total Bill=%f\n",sum);
+printf("You have Saved :%f",z-sum); 
 printf("\n");
-printf("*******************************************************Thank You Visit Again*******************************************\n");
+printf("********************************************************Thank You Visit Again***************************************\n");
 }
 void category_function(tree *t,int category1)
 {
